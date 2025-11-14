@@ -4,7 +4,7 @@ const router = express.Router()
 const Person = require('../models/Person')
 
 // route 1: Add the emp data
-router.post('/person', async (req, res) => {
+router.post('/addPerson', async (req, res) => {
     try {
         const data = req.body // Assunming the request body contains the person data
         const newPerson = Person(data)// Create a new Person document using the mongoose model
@@ -21,7 +21,7 @@ router.post('/person', async (req, res) => {
 })
 
 // route 2: fetch all person data
-router.get('/fetchPerson', async (req, res) => {
+router.get('/allFetch', async (req, res) => {
     try {
         const allPerson = await Person.find()
         console.log("Fetch All Person successfull");
@@ -34,7 +34,7 @@ router.get('/fetchPerson', async (req, res) => {
 })
 
 // route 3 : fetch perameterized person api call
-router.get('/fetechPerson/:workType', async (req, res) => {
+router.get('/fetch/:workType', async (req, res) => {
     try {
         const workType = req.params.workType
         if (workType == 'chef' || workType == 'waiter' || workType == 'manager') {
@@ -50,7 +50,7 @@ router.get('/fetechPerson/:workType', async (req, res) => {
 })
 
 // routes 4 pesron data update
-router.put('/personUpdate/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     try {
         const personId = req.params.id; // Extract the id from the URL prameter
         const updatePersonData = req.body; // updated data for the person
@@ -63,7 +63,7 @@ router.put('/personUpdate/:id', async (req, res) => {
         if (!response) {
             return res.status(404).json({ error: 'Person is note found' })
         }
-        // console.log("Update Person data");
+        console.log("Update Person data");
         res.status(200).json(response)
 
     } catch (error) {

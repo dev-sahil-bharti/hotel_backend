@@ -4,7 +4,7 @@ const router = express.Router()
 const MenueItems = require('../models/MenueItems')
 
 //route 1: Add MenueItems data
-router.post('/menueItems', async (req, res) => {
+router.post('/addItems', async (req, res) => {
     try {
         const data = req.body
         const NewMenueItems = MenueItems(data)
@@ -19,7 +19,7 @@ router.post('/menueItems', async (req, res) => {
 })
 
 // route 2: fetch all menuIntems
-router.get('/fetchMenuItems', async (req, res) => {
+router.get('/fetchAllItems', async (req, res) => {
     try {
         const allMenuItems = await MenueItems.find();
         console.log("fetch all menu items");
@@ -31,7 +31,7 @@ router.get('/fetchMenuItems', async (req, res) => {
 })
 
 // route 3: fetch items is veg / Non-veg
-router.get('/menuItems/:type', async (req, res) => {
+router.get('/Items/:type', async (req, res) => {
     try {
         const type = req.params.type;
         const response = await MenueItems.find({ type: type })
@@ -47,7 +47,7 @@ router.get('/menuItems/:type', async (req, res) => {
 })
 
 // routes 4: Update MenuItems data
-router.put('/updateMenuItems/:id', async (req, res) => {
+router.put('/itemsUpdate/:id', async (req, res) => {
     try {
         const menuId = req.params.id;
         const updateMenu = req.body;
@@ -70,7 +70,7 @@ router.put('/updateMenuItems/:id', async (req, res) => {
 });
 
 // routes 5: Delete MenuItems
-router.delete('/deleteMenuItems/:id', async (req, res) => {
+router.delete('/itemsDelete/:id', async (req, res) => {
     try {
         const menueItemsId = req.params.id;
 
