@@ -11,7 +11,7 @@ The **Hotel Bakend** application is a Node.js-based system developed using the E
 
 - **Add a Person:**
 
-  - Endpoint: `POST /person`
+  - Endpoint: `POST /person/signup`
   - Description: Adds a person to the system with details such as name, role, etc.
 
 - **Get All Persons:**

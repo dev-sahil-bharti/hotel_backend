@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 // import routes
 const personRoutes = require('./routes/Person_routes')
-const menuRoutes = require('./routes/MenuItems_routes') 
+const menuRoutes = require('./routes/MenuItems_routes')
 
 // use routes
 app.use('/person', personRoutes);

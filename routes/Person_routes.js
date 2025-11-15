@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router()
+const bcrypt = require('bcrypt')
+const { jwnAuthMiddleware, generateToken } = require('../authentication/jwt')
 
 const Person = require('../models/Person')
 
-// route 1: Add the emp data
-router.post('/addPerson', async (req, res) => {
+// route 1: (Add/ sign in) the emp data
+router.post('/signup', async (req, res) => {
     try {
         const data = req.body // Assunming the request body contains the person data
         const newPerson = Person(data)// Create a new Person document using the mongoose model
@@ -12,7 +14,18 @@ router.post('/addPerson', async (req, res) => {
         // Save the new person to database
         const response = await newPerson.save();
         console.log('Person Data Saved');
-        res.status(200).json(response)
+
+        // create payload
+        const payLoad = {
+            id: response._id,
+            username: response.username,
+            name: response.name
+        }
+        // user jtw token
+        const token = generateToken(payLoad);
+        console.log("token: ", token);
+
+        res.status(200).json({ response: response, token: token })
     }
     catch (error) {
         console.log('error', error);
@@ -20,8 +33,35 @@ router.post('/addPerson', async (req, res) => {
     }
 })
 
+// routes : login the employee
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body
+
+        const user = await Person.findOne({ username: username })
+
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(401).json({ error: 'invalid username and password ' })
+        }
+        const payLoad = {
+            id: user.id,
+            username: user.username
+        }
+        const token = generateToken(payLoad)
+
+        res.status(200).json({
+            message: 'user logged in seccessfully',
+            id: user.id,
+            username: username,
+            token: token,
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Servre Error' })
+    }
+})
+
 // route 2: fetch all person data
-router.get('/allFetch', async (req, res) => {
+router.get('/allFetch', jwnAuthMiddleware, async (req, res) => {
     try {
         const allPerson = await Person.find()
         console.log("Fetch All Person successfull");
@@ -30,6 +70,21 @@ router.get('/allFetch', async (req, res) => {
     catch (error) {
         console.log("error", error);
         res.status(500).json({ error: 'Internal server Error' })
+    }
+})
+
+// route Get : user check self profile
+router.get('/profile', jwnAuthMiddleware, async (req, res) => {
+    try {
+        const userData = req.user
+
+        const userId = userData.id
+
+        const user = await Person.findById(userId)
+
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' })
     }
 })
 
